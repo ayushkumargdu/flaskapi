@@ -3,3 +3,4 @@ faker
 user_agent
 flask
 gunicorn
+queue
