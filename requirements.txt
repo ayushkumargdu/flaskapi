@@ -2,3 +2,4 @@ httpx
 faker
 user_agent
 flask
+gunicorn
