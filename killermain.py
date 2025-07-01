@@ -43,7 +43,7 @@ async def process_card(gate_name: str, cc: str):
     
     try:
         start = time.time()
-        result = await processors[gate_name](cc)
+        result = processors[gate_name](cc)
         tt = f'{time.time()-start:.2f}'
         result = {"result":result,"time":tt}
         return jsonify(result)
@@ -52,4 +52,4 @@ async def process_card(gate_name: str, cc: str):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=8000)

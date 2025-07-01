@@ -1,7 +1,7 @@
 import asyncio
-import httpx
 import threading
 import queue
+import httpx
 import random
 import json
 from faker import Faker
@@ -233,34 +233,42 @@ async def ck(cc:str):
     except Exception as e:
         print(e)
         return f'Error ; {e}'
-def worker(cc_input, result_queue):
-    while True:
-        try:
-            result = await ck(cc_input)
-            result_queue.put(result)
-        except Exception as e:
-            result_queue.put(f"ERROR: {str(e)}")
 
-def ck1(cc_number, num_threads=5):
-    """Run ck() continuously in 5 threads on the same CC"""
-    result_queue = queue.Queue()
+result_queue = queue.Queue()
+
+def worker(cc: str):
+    """Thread worker running async ck()"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        result = loop.run_until_complete(ck(cc))
+        result_queue.put(result)
+    except Exception as e:
+        result_queue.put(f"Error: {str(e)}")
+    finally:
+        loop.close()
+
+def ck1(cc: str, num_threads=5):
+    """Run 5 threads on the same CC"""
     threads = []
+    print(f"Processing {cc[:12]}... in {num_threads} threads")
     
     # Start threads
     for _ in range(num_threads):
-        t = threading.Thread(
-            target=worker,
-            args=(cc_number, result_queue),
-            daemon=True
-        )
+        t = threading.Thread(target=worker, args=(cc,))
         t.start()
         threads.append(t)
     
-    # Monitor results
-    try:
-        while True:
-            if not result_queue.empty():
-                print(result_queue.get())
-            time.sleep(0.1)
-    except KeyboardInterrupt:
-        print("\nStopping threads...")
+    # Wait for completion
+    for t in threads:
+        t.join()
+    
+    # Get results
+    results = []
+    while not result_queue.empty():
+        results.append(result_queue.get())
+    
+    if 'killed successfully' in results:
+        return "killed"
+    else:
+        return "failed"
