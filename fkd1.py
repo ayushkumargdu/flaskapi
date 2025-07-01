@@ -236,7 +236,7 @@ async def ck(cc:str):
 def worker(cc_input, result_queue):
     while True:
         try:
-            result = ck(cc_input)
+            result = await ck(cc_input)
             result_queue.put(result)
         except Exception as e:
             result_queue.put(f"ERROR: {str(e)}")
